@@ -1,0 +1,53 @@
+<% layout('layouts/boilerplate') %>
+    <div class="row">
+        <h1 class="text-center">Edit Camp</h1>
+        <div class="col-6 offset-3">
+            <form action="/camps/<%= camp.id %>?_method=PUT" method="post" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label class="form-label" for="title">Title</label>
+                    <input class="form-control" type="text" id="title" name="camp[title]" required
+                        value="<%= camp.title %>">
+                    <div class="valid-tooltip">
+                        Looks good!
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="image">Image</label>
+                    <input class="form-control" type="text" id="image" name="camp[image]" required
+                        value="<%= camp.image %>">
+                    <div class="valid-tooltip">
+                        Looks good!
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="location">Location</label>
+                    <input class="form-control" type="text" id="location" name="camp[location]" required
+                        value="<%= camp.location %>">
+                    <div class="valid-tooltip">
+                        Looks good!
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="description">Description</label>
+                    <textarea class="form-control" id="description" name="camp[description]" required
+                        style="height: 200px;"><%= camp.description %></textarea>
+                    <div class="valid-tooltip">
+                        Looks good!
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="price">Price</label>
+                    <div class="input-group">
+                        <span class="input-group-text" id="basic-addon1">₹</span>
+                        <input class="form-control" type="text" id="price" name="camp[price]" required
+                            value="<%= camp.price %>">
+                    </div>
+                    <div class="valid-tooltip">
+                        Looks good!
+                    </div>
+                </div>
+                <button class="btn btn-primary mb-3">Edit</button><br>
+                <a class="btn btn-primary" href="/camps/<%= camp.id %>">Back</a>
+            </form>
+        </div>
+    </div>
