@@ -37,7 +37,18 @@
         <form action="/camps/<%=camp._id %>/reviews" method="Post" class="needs-validation" novalidate>
             <div class="m-3">
                 <label class="form-label" for="rating">Rating</label>
-                <input type="range" class="form-range" min="1" max="5" step="1" id="rating" name="review[rating]">
+                <fieldset class="starability-basic">
+                    <input type="radio" id="second-rate1" name="review[rating]" value="1" />
+                    <label for="second-rate1" title="Terrible">1 star</label>
+                    <input type="radio" id="second-rate2" name="review[rating]" value="2" />
+                    <label for="second-rate2" title="Not good">2 stars</label>
+                    <input type="radio" id="second-rate3" name="review[rating]" value="3" />
+                    <label for="second-rate3" title="Average">3 stars</label>
+                    <input type="radio" id="second-rate4" name="review[rating]" value="4" />
+                    <label for="second-rate4" title="Very good">4 stars</label>
+                    <input type="radio" id="second-rate5" name="review[rating]" value="5" />
+                    <label for="second-rate5" title="Amazing">5 stars</label>
+                </fieldset>
             </div>
             <div class="m-3">
                 <label class="form-label" for="body">Review</label>
@@ -53,10 +64,9 @@
             <h5 class="m-3">Reviews</h5>
             <% for(let review of camp.reviews){%>
             <div class="card card-body mb-3">
-                <h5 class="card-title">
-                    <strong>Rating:</strong>
-                    <%= review.rating %>
-                </h5>
+                <p class="starability-result" data-rating="<%= review.rating %>">
+                    Rated: <%= review.rating %> stars
+                </p>
                 <h6 class="card-subtitle">by <%= review.author.username %></h6>
                 <p class="card-text">
                     <strong>Review:</strong>
