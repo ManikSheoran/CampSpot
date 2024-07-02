@@ -5,11 +5,11 @@ module.exports.index = async (req, res) => {
     res.render("camps/index", { camps, title: 'All Camps' });
 };
 
-module.exports.createCampForm = (req, res) => {
+module.exports.createForm = (req, res) => {
     res.render("camps/new", { title: 'New Camp' });
 };
 
-module.exports.createCamp = async (req, res, next) => {
+module.exports.create = async (req, res, next) => {
     const newCamp = new Camp(req.body.camp);
     newCamp.author = req.user._id;
     await newCamp.save();
@@ -17,7 +17,7 @@ module.exports.createCamp = async (req, res, next) => {
     res.redirect(`/camps/${newCamp._id}`);
 };
 
-module.exports.editCampForm = async (req, res) => {
+module.exports.editForm = async (req, res) => {
     const { id } = req.params;
     const camp = await Camp.findById(id);
     if (!camp) {
@@ -27,7 +27,7 @@ module.exports.editCampForm = async (req, res) => {
     res.render("camps/edit", { camp, title: `Edit ${camp.title}` });
 };
 
-module.exports.editCamp = async (req, res) => {
+module.exports.edit = async (req, res) => {
     const { id } = req.params;
     const camp = await Camp.findById(id);
     await Camp.findByIdAndUpdate(id, { ...req.body.camp }, { new: true });
@@ -39,7 +39,7 @@ module.exports.editCamp = async (req, res) => {
     res.redirect(`/camps/${id}`);
 };
 
-module.exports.deleteCamp = async (req, res) => {
+module.exports.destroy = async (req, res) => {
     const { id } = req.params;
     const camp = await Camp.findById(id);
     await Camp.findByIdAndDelete(id);
@@ -51,7 +51,7 @@ module.exports.deleteCamp = async (req, res) => {
     res.redirect('/camps');
 };
 
-module.exports.oneCamp = async (req, res) => {
+module.exports.one = async (req, res) => {
     const { id } = req.params;
     const camp = await Camp.findById(id).populate({
         path: 'reviews',
