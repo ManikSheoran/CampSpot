@@ -3,20 +3,7 @@ const router = express.Router();
 
 const Camp = require('../models/camp.js');
 const catchAsync = require('../utilities/catchAsync.js');
-const ExpressError = require('../utilities/ExpressError.js');
-const { campSchema } = require('../schemas.js');
-const { isLoggedIn } = require('../middleware.js');
-
-// Middleware to validate camp data
-const validateCamp = (req, res, next) => {
-    const { error } = campSchema.validate(req.body);
-    if (error) {
-        const msg = error.details.map(el => el.message).join(',');
-        throw new ExpressError(msg, 400);
-    } else {
-        next();
-    }
-};
+const { validateCamp, isAuthor, isLoggedIn } = require('../middleware.js');
 
 // Route to get all camps
 router.get("/", catchAsync(async (req, res) => {
@@ -39,28 +26,20 @@ router.post("/", isLoggedIn, validateCamp, catchAsync(async (req, res, next) => 
 }));
 
 // Route to render form to edit a camp
-router.get("/:id/edit", isLoggedIn, catchAsync(async (req, res) => {
+router.get("/:id/edit", isLoggedIn, isAuthor, catchAsync(async (req, res) => {
     const { id } = req.params;
     const camp = await Camp.findById(id);
     if (!camp) {
         req.flash('error', 'Camp not found');
         return res.redirect('/camps');
     }
-    if (!camp.author.equals(req.user._id)) {
-        req.flash('error', 'You do not have permission to do that.');
-        return res.redirect(`/camps/${id}`)
-    }
     res.render("camps/edit", { camp, title: `Edit ${camp.title}` });
 }));
 
 // Route to update a camp
-router.put("/:id", isLoggedIn, validateCamp, catchAsync(async (req, res) => {
+router.put("/:id", isLoggedIn, isAuthor, validateCamp, catchAsync(async (req, res) => {
     const { id } = req.params;
     const camp = await Camp.findById(id);
-    if (!camp.author.equals(req.user._id)) {
-        req.flash('error', 'You do not have permission to do that.');
-        return res.redirect(`/camps/${id}`)
-    }
     await Camp.findByIdAndUpdate(id, { ...req.body.camp }, { new: true });
     if (!camp) {
         req.flash('error', 'Camp not found');
@@ -71,13 +50,9 @@ router.put("/:id", isLoggedIn, validateCamp, catchAsync(async (req, res) => {
 }));
 
 // Route to delete a camp
-router.delete("/:id", isLoggedIn, catchAsync(async (req, res) => {
+router.delete("/:id", isLoggedIn, isAuthor, catchAsync(async (req, res) => {
     const { id } = req.params;
     const camp = await Camp.findById(id);
-    if (!camp.author.equals(req.user._id)) {
-        req.flash('error', 'You do not have permission to do that.');
-        return res.redirect(`/camps/${id}`)
-    }
     await Camp.findByIdAndDelete(id);
     if (!camp) {
         req.flash('error', 'Camp not found');
@@ -90,7 +65,12 @@ router.delete("/:id", isLoggedIn, catchAsync(async (req, res) => {
 // Route to show a specific camp
 router.get("/:id", catchAsync(async (req, res) => {
     const { id } = req.params;
-    const camp = await Camp.findById(id).populate('reviews');
+    const camp = await Camp.findById(id).populate({
+        path: 'reviews',
+        populate: {
+            path: 'author'
+        }
+    });
     if (!camp) {
         req.flash('error', 'Camp not found');
         return res.redirect('/camps');
