@@ -1,5 +1,6 @@
 const { campSchema, reviewSchema } = require('./schemas.js');
 const Camp = require('./models/camp.js');
+const Review = require('./models/review.js');
 const ExpressError = require('./utilities/ExpressError.js');
 
 module.exports.storeReturnTo = (req, res, next) => {
@@ -48,3 +49,13 @@ module.exports.validateReview = (req, res, next) => {
         next();
     }
 };
+
+module.exports.isReviewAuthor = async (req, res, next) => {
+    const { id, rid } = req.params;
+    const review = await Review.findById(rid);
+    if (!review.author.equals(req.user._id)) {
+        req.flash('error', 'You do not have permission to do that.');
+        return res.redirect(`/camps/${id}`)
+    }
+    next();
+}

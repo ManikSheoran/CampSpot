@@ -5,7 +5,7 @@ const catchAsync = require('../utilities/catchAsync.js');
 const Review = require("../models/review.js");
 const ExpressError = require('../utilities/ExpressError');
 const Camp = require('../models/camp.js');
-const { isLoggedIn, validateReview } = require('../middleware.js');
+const { isLoggedIn, validateReview, isReviewAuthor } = require('../middleware.js');
 
 // Route to create a new review
 router.post("/", isLoggedIn, validateReview, catchAsync(async (req, res) => {
@@ -24,7 +24,7 @@ router.post("/", isLoggedIn, validateReview, catchAsync(async (req, res) => {
 }));
 
 // Route to delete a review
-router.delete("/:rid", isLoggedIn, catchAsync(async (req, res) => {
+router.delete("/:rid", isLoggedIn, isReviewAuthor, catchAsync(async (req, res) => {
     const { id, rid } = req.params;
     const camp = await Camp.findById(id);
     if (!camp) {

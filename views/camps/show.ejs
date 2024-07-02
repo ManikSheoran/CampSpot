@@ -55,8 +55,9 @@
             <div class="card card-body mb-3">
                 <h5 class="card-title">
                     <strong>Rating:</strong>
-                    <%= review.rating %> <span style="font-size: 1rem;">by <%= review.author.username %></span>
+                    <%= review.rating %>
                 </h5>
+                <h6 class="card-subtitle">by <%= review.author.username %></h6>
                 <p class="card-text">
                     <strong>Review:</strong>
                     <%= review.body %>
