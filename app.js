@@ -9,6 +9,7 @@ const session = require("express-session");
 const flash = require('connect-flash');
 const passport = require('passport');
 const localStrategy = require('passport-local');
+const MongoStore = require('connect-mongo');
 
 const camps = require('./routes/camps.js');
 const reviews = require('./routes/reviews.js');
@@ -38,6 +39,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const sessionConfig = {
+    store: MongoStore.create({
+        mongoUrl: process.env.DB_URI,
+        touchAfter: 24 * 60 * 60 * 7
+    }),
     secret: 'badsecret',
     resave: false,
     saveUninitialized: true,
@@ -92,5 +97,5 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-    console.log("App is serving on port 3000");
+    console.log(`App is serving on port ${PORT}`);
 });
