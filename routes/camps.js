@@ -15,7 +15,7 @@ router.route('/')
 router.get("/new", isLoggedIn, camps.createForm);
 
 router.route('/:id')
-    .put(isLoggedIn, isAuthor, validateCamp, catchAsync(camps.edit))
+    .put(isLoggedIn, isAuthor, upload.single('image'), validateCamp, catchAsync(camps.edit))
     .get(catchAsync(camps.one))
     .delete(isLoggedIn, isAuthor, catchAsync(camps.destroy));
 

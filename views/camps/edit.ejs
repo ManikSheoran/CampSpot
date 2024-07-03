@@ -2,7 +2,7 @@
 <div class="row">
     <h1 class="text-center mt-5">Edit Camp</h1>
     <div class="col-md-6 offset-md-3">
-        <form action="/camps/<%= camp.id %>?_method=PUT" method="post" class="needs-validation" novalidate>
+        <form action="/camps/<%= camp.id %>?_method=PUT" method="post" class="needs-validation" novalidate enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label>
                 <input type="text" class="form-control" id="title" name="camp[title]" required value="<%= camp.title %>">
@@ -11,10 +11,13 @@
                 </div>
             </div>
             <div class="mb-3">
-                <label for="image" class="form-label">Image URL</label>
-                <input type="text" class="form-control" id="image" name="camp[image]" required value="<%= camp.image %>">
+                <label for="image" class="form-label">Image</label>
+                <input type="file" class="form-control" id="image" name="image">
+                <% if (camp.image && camp.image.url) { %>
+                <img src="<%= camp.image.url %>" alt="Current Image" class="img-fluid mt-2 mb-2">
+                <% } %>
                 <div class="invalid-feedback">
-                    Please provide an image URL.
+                    Please upload an image.
                 </div>
             </div>
             <div class="mb-3">
