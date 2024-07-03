@@ -1,4 +1,5 @@
 const Camp = require('../models/camp.js');
+const cloudinary = require('cloudinary').v2;
 
 module.exports.index = async (req, res) => {
     const camps = await Camp.find({});
@@ -35,29 +36,49 @@ module.exports.editForm = async (req, res) => {
 module.exports.edit = async (req, res) => {
     const { id } = req.params;
     const camp = await Camp.findById(id);
-    await Camp.findByIdAndUpdate(id, { ...req.body.camp }, { new: true });
+
     if (!camp) {
         req.flash('error', 'Camp not found');
         return res.redirect('/camps');
     }
-    camp.image = {
-        url: req.file.path,
-        filename: req.file.filename
-    };
-    await camp.save();
+
+    // Update the camp details
+    await Camp.findByIdAndUpdate(id, { ...req.body.camp }, { new: true });
+
+    // If a new image is uploaded, replace the existing one
+    if (req.file) {
+        // Delete the existing image from Cloudinary
+        if (camp.image && camp.image.filename) {
+            await cloudinary.uploader.destroy(camp.image.filename);
+        }
+
+        // Update the camp with the new image
+        camp.image = {
+            url: req.file.path,
+            filename: req.file.filename
+        };
+
+        await camp.save();
+    }
+
     req.flash('success', 'Successfully updated the camp!');
     res.redirect(`/camps/${id}`);
 };
 
-
 module.exports.destroy = async (req, res) => {
     const { id } = req.params;
     const camp = await Camp.findById(id);
-    await Camp.findByIdAndDelete(id);
+
     if (!camp) {
         req.flash('error', 'Camp not found');
         return res.redirect('/camps');
     }
+
+    if (camp.image && camp.image.filename) {
+        await cloudinary.uploader.destroy(camp.image.filename);
+    }
+
+    await Camp.findByIdAndDelete(id);
     req.flash('success', 'Successfully deleted the camp!');
     res.redirect('/camps');
 };
