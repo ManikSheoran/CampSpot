@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== "production") {
+    require('dotenv').config();
+}
+
 const express = require("express");
 const app = express();
 const path = require("path");
@@ -21,9 +25,7 @@ require('dotenv').config();
 
 mongoose.set('strictQuery', true);
 
-//process.env.DB_URI
-//'mongodb://localhost:27017/campDB'
-mongoose.connect('mongodb://localhost:27017/campDB')
+mongoose.connect(process.env.DB_URI)
     .then(() => {
         console.log("Mongo Connection Open!!!");
     })

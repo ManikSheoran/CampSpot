@@ -11,11 +11,16 @@ module.exports.createForm = (req, res) => {
 
 module.exports.create = async (req, res, next) => {
     const newCamp = new Camp(req.body.camp);
+    newCamp.image = {
+        url: req.file.path,
+        filename: req.file.filename
+    };
     newCamp.author = req.user._id;
     await newCamp.save();
     req.flash('success', 'Successfully created a new camp!');
     res.redirect(`/camps/${newCamp._id}`);
 };
+
 
 module.exports.editForm = async (req, res) => {
     const { id } = req.params;

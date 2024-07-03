@@ -1,86 +1,69 @@
 <% layout('layouts/boilerplate') %>
 <div class="row d-flex justify-content-center">
     <div class="card col-5 m-3">
-        <img class="card-img-top" src="<%=camp.image%>" alt="" width="100%">
+        <% if(camp.image && camp.image.url) { %>
+            <img class="card-img-top" src="<%= camp.image.url %>" alt="Camp Image" width="100%">
+        <% } %>
         <div class="card-body">
-            <h5 class="card-title">
-                <%= camp.title %>
-            </h5>
-            <p class="card-text">
-                <%= camp.description %>
-            </p>
+            <h5 class="card-title"><%= camp.title %></h5>
+            <p class="card-text"><%= camp.description %></p>
         </div>
         <ul class="list-group list-group-flush">
-            <li class="list-group-item">
-                <%= camp.location %>
-            </li>
-            <li class="list-group-item">
-                <b>₹ <%= camp.price %></b>
-            </li>
+            <li class="list-group-item"><%= camp.location %></li>
+            <li class="list-group-item"><b>₹ <%= camp.price %></b></li>
         </ul>
         <div class="card-body">
             <a class="btn btn-primary mr-3" href="/camps">All Camps</a>
-            <% if(currentUser && camp.author.equals(currentUser._id)) {%>
-            <a class="btn btn-primary mr-3" href="/camps/<%= camp.id %>/edit">Edit</a><br>
-            <form action="/camps/<%= camp.id %>?_method=DELETE" method="POST">
-                <button class="btn btn-danger mt-3">DELETE</button>
-            </form>
+            <% if(currentUser && camp.author.equals(currentUser._id)) { %>
+                <a class="btn btn-primary mr-3" href="/camps/<%= camp._id %>/edit">Edit</a><br>
+                <form action="/camps/<%= camp._id %>?_method=DELETE" method="POST">
+                    <button class="btn btn-danger mt-3">DELETE</button>
+                </form>
             <% } %>
         </div>
-
     </div>
 
     <div class="card col-5 m-3">
-
         <% if(currentUser) { %>
-        <h5 class="card-title m-3">Leave a Review </h5>
-        <form action="/camps/<%=camp._id %>/reviews" method="Post" class="needs-validation" novalidate>
-            <div class="m-3">
-                <label class="form-label" for="rating">Rating</label>
-                <fieldset class="starability-basic">
-                    <input type="radio" id="second-rate1" name="review[rating]" value="1" />
-                    <label for="second-rate1" title="Terrible">1 star</label>
-                    <input type="radio" id="second-rate2" name="review[rating]" value="2" />
-                    <label for="second-rate2" title="Not good">2 stars</label>
-                    <input type="radio" id="second-rate3" name="review[rating]" value="3" />
-                    <label for="second-rate3" title="Average">3 stars</label>
-                    <input type="radio" id="second-rate4" name="review[rating]" value="4" />
-                    <label for="second-rate4" title="Very good">4 stars</label>
-                    <input type="radio" id="second-rate5" name="review[rating]" value="5" />
-                    <label for="second-rate5" title="Amazing">5 stars</label>
-                </fieldset>
-            </div>
-            <div class="m-3">
-                <label class="form-label" for="body">Review</label>
-                <textarea class="form-control" name="review[body]" id="body" required></textarea>
-                <div class="invalid-feedback">
-                    Review is required.
+            <h5 class="card-title m-3">Leave a Review</h5>
+            <form action="/camps/<%= camp._id %>/reviews" method="POST" class="needs-validation" novalidate>
+                <div class="m-3">
+                    <label class="form-label" for="rating">Rating</label>
+                    <fieldset class="starability-basic">
+                        <input type="radio" id="rate1" name="review[rating]" value="1" />
+                        <label for="rate1" title="Terrible">1 star</label>
+                        <input type="radio" id="rate2" name="review[rating]" value="2" />
+                        <label for="rate2" title="Not good">2 stars</label>
+                        <input type="radio" id="rate3" name="review[rating]" value="3" />
+                        <label for="rate3" title="Average">3 stars</label>
+                        <input type="radio" id="rate4" name="review[rating]" value="4" />
+                        <label for="rate4" title="Very good">4 stars</label>
+                        <input type="radio" id="rate5" name="review[rating]" value="5" checked />
+                        <label for="rate5" title="Amazing">5 stars</label>
+                    </fieldset>
                 </div>
-            </div>
-            <button class="btn btn-success m-3">Submit</button>
-        </form>
+                <div class="m-3">
+                    <label class="form-label" for="body">Review</label>
+                    <textarea class="form-control" name="review[body]" id="body" required></textarea>
+                    <div class="invalid-feedback">Review is required.</div>
+                </div>
+                <button class="btn btn-success m-3">Submit</button>
+            </form>
         <% } %>
         <div>
             <h5 class="m-3">Reviews</h5>
-            <% for(let review of camp.reviews){%>
-            <div class="card card-body mb-3">
-                <p class="starability-result" data-rating="<%= review.rating %>">
-                    Rated: <%= review.rating %> stars
-                </p>
-                <h6 class="card-subtitle">by <%= review.author.username %></h6>
-                <p class="card-text">
-                    <strong>Review:</strong>
-                    <%= review.body %>
-                </p>
-                <% if(currentUser && review.author.equals(currentUser._id)) {%>
-                <form action="/camps/<%= camp._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
-                    <button class="btn btn-sm btn-danger mt-3">DELETE</button>
-                </form>
-                <% } %>
-            </div>
-
+            <% for(let review of camp.reviews) { %>
+                <div class="card card-body mb-3">
+                    <p class="starability-result" data-rating="<%= review.rating %>">Rated: <%= review.rating %> stars</p>
+                    <h6 class="card-subtitle">by <%= review.author.username %></h6>
+                    <p class="card-text"><strong>Review:</strong> <%= review.body %></p>
+                    <% if(currentUser && review.author.equals(currentUser._id)) { %>
+                        <form action="/camps/<%= camp._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+                            <button class="btn btn-sm btn-danger mt-3">DELETE</button>
+                        </form>
+                    <% } %>
+                </div>
             <% } %>
-
         </div>
     </div>
 </div>
