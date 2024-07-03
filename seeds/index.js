@@ -26,7 +26,10 @@ const seedDB = async () => {
         const camp = new Camp({
             author: '6681698717b270a317a74f71',
             title: `${descriptors[rand1]} ${places[rand2]}`,
-            image: "https://images.unsplash.com/photo-1507584359040-f44a16355689?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            image: {
+                url: "https://images.unsplash.com/photo-1507584359040-f44a16355689?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                filename: "camp"
+            },
             location: `${cities[randi].city}, ${cities[randi].state}`,
             description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure expedita aliquid repudiandae consequuntur totam et maiores, delectus facere, corporis quaerat facilis nisi quis illo! Magni placeat consequuntur assumenda consequatur error.",
             price: randprice
