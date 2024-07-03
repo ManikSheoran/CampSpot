@@ -21,6 +21,7 @@ module.exports.create = async (req, res, next) => {
     res.redirect(`/camps/${newCamp._id}`);
 };
 
+
 module.exports.editForm = async (req, res) => {
     const { id } = req.params;
     const camp = await Camp.findById(id);
@@ -33,25 +34,26 @@ module.exports.editForm = async (req, res) => {
 
 module.exports.edit = async (req, res) => {
     const { id } = req.params;
-    const camp = await Camp.findByIdAndUpdate(id, { ...req.body.camp }, { new: true });
+    const camp = await Camp.findById(id);
+    await Camp.findByIdAndUpdate(id, { ...req.body.camp }, { new: true });
     if (!camp) {
         req.flash('error', 'Camp not found');
         return res.redirect('/camps');
     }
-    if (req.file) {
-        camp.image = {
-            url: req.file.path,
-            filename: req.file.filename
-        };
-        await camp.save();
-    }
+    camp.image = {
+        url: req.file.path,
+        filename: req.file.filename
+    };
+    await camp.save();
     req.flash('success', 'Successfully updated the camp!');
     res.redirect(`/camps/${id}`);
 };
 
+
 module.exports.destroy = async (req, res) => {
     const { id } = req.params;
-    const camp = await Camp.findByIdAndDelete(id);
+    const camp = await Camp.findById(id);
+    await Camp.findByIdAndDelete(id);
     if (!camp) {
         req.flash('error', 'Camp not found');
         return res.redirect('/camps');
@@ -74,3 +76,5 @@ module.exports.one = async (req, res) => {
     }
     res.render("camps/show", { camp, title: camp.title });
 };
+
+
