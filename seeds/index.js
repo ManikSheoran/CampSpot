@@ -2,9 +2,12 @@ const mongoose = require("mongoose");
 const Camp = require("../models/camp");
 const cities = require('./cities');
 const { descriptors, places } = require('./seedHelpers');
+
+require('dotenv').config();
+
 mongoose.set('strictQuery', true);
 
-mongoose.connect('mongodb://127.0.0.1:27017/campDB')
+mongoose.connect(process.env.DB_URI)
     .then(() => {
         console.log("Mongo Connection Open!!!");
     })
@@ -15,7 +18,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/campDB')
 
 const seedDB = async () => {
     await Camp.deleteMany({});
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 3; i++) {
         const randi = Math.floor(Math.random() * 1000);
         const randprice = Math.floor(Math.random() * 1000) + 200;
         const rand1 = Math.floor(Math.random() * descriptors.length);
