@@ -1,5 +1,5 @@
 # CampSpot
-Welcome to CampSpot – your ultimate destination for finding and reviewing camps! Inspired by YelpCamp by Colt Steele, CampSpot allows users to add, explore, review, and share camps.
+Welcome to CampSpot – your destination for adding, finding and reviewing camps! CampSpot allows users to add, explore, review, and share camps.
 
 ## Tech Stack
 * Frontend: HTML, CSS, JavaScript, EJS
