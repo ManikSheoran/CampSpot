@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-
 const path = require("path");
 const mongoose = require("mongoose");
 
@@ -17,9 +16,11 @@ const auth = require('./routes/auth.js');
 const User = require('./models/user.js');
 const ExpressError = require('./utilities/ExpressError');
 
+require('dotenv').config();
+
 mongoose.set('strictQuery', true);
 
-mongoose.connect('mongodb://127.0.0.1:27017/campDB')
+mongoose.connect(process.env.DB_URI)
     .then(() => {
         console.log("Mongo Connection Open!!!");
     })
@@ -88,6 +89,8 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render("error", { message, statusCode, err, title: "Error" });
 });
 
-app.listen(3000, () => {
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
     console.log("App is serving on port 3000");
 });
