@@ -21,7 +21,9 @@ require('dotenv').config();
 
 mongoose.set('strictQuery', true);
 
-mongoose.connect(process.env.DB_URI)
+//process.env.DB_URI
+//'mongodb://localhost:27017/campDB'
+mongoose.connect('mongodb://localhost:27017/campDB')
     .then(() => {
         console.log("Mongo Connection Open!!!");
     })
