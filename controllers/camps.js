@@ -1,5 +1,8 @@
 const Camp = require('../models/camp.js');
 const cloudinary = require('cloudinary').v2;
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const mapboxTOKEN = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapboxTOKEN });
 
 module.exports.index = async (req, res) => {
     const camps = await Camp.find({});
@@ -11,7 +14,12 @@ module.exports.createForm = (req, res) => {
 };
 
 module.exports.create = async (req, res, next) => {
+    const geocodes = await geocoder.forwardGeocode({
+        query: req.body.camp.location,
+        limit: 1
+    }).send();
     const newCamp = new Camp(req.body.camp);
+    newCamp.geometry = geocodes.body.features[0].geometry;
     newCamp.image = {
         url: req.file.path,
         filename: req.file.filename
@@ -21,7 +29,6 @@ module.exports.create = async (req, res, next) => {
     req.flash('success', 'Successfully created a new camp!');
     res.redirect(`/camps/${newCamp._id}`);
 };
-
 
 module.exports.editForm = async (req, res) => {
     const { id } = req.params;
@@ -42,23 +49,34 @@ module.exports.edit = async (req, res) => {
         return res.redirect('/camps');
     }
 
+    const updatedCampData = { ...req.body.camp };
+
+    // If location is updated, get the new geocodes
+    if (req.body.camp.location !== camp.location) {
+        const geocodes = await geocoder.forwardGeocode({
+            query: req.body.camp.location,
+            limit: 1
+        }).send();
+        updatedCampData.geometry = geocodes.body.features[0].geometry;
+    }
+
     // Update the camp details
-    await Camp.findByIdAndUpdate(id, { ...req.body.camp }, { new: true });
+    const updatedCamp = await Camp.findByIdAndUpdate(id, updatedCampData, { new: true });
 
     // If a new image is uploaded, replace the existing one
     if (req.file) {
-        // Delete the existing image from Cloudinary
+        // Delete the existing image from Cloudinary if it exists
         if (camp.image && camp.image.filename) {
             await cloudinary.uploader.destroy(camp.image.filename);
         }
 
         // Update the camp with the new image
-        camp.image = {
+        updatedCamp.image = {
             url: req.file.path,
             filename: req.file.filename
         };
 
-        await camp.save();
+        await updatedCamp.save();
     }
 
     req.flash('success', 'Successfully updated the camp!');
@@ -97,5 +115,3 @@ module.exports.one = async (req, res) => {
     }
     res.render("camps/show", { camp, title: camp.title });
 };
-
-
