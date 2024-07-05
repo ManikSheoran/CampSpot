@@ -1,23 +1,35 @@
-<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background-color: #226552;">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/camps">CampSpot</a>
+        <a class="navbar-brand" href="/camps" success>CampSpot</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <div class="navbar-nav">
-                <a class="nav-link" href="/">Home</a>
-                <a class="nav-link" href="/camps">Camps</a>
-                <a class="nav-link" href="/camps/new">New Camp</a>
-            </div>
-            <div class="navbar-nav ms-auto">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/" success>Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/camps" success>Camps</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/camps/new" success>New Camp</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <% if(!currentUser) { %>
-                    <a class="nav-link" href="/login">Login</a>
-                    <a class="nav-link" href="/register">Sign Up</a>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login" success>Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/register" success>Sign Up</a>
+                </li>
                 <% } else { %>
-                    <a class="nav-link" href="/logout">Logout</a>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout" success>Logout</a>
+                </li>
                 <% } %>
-            </div>
+            </ul>
         </div>
     </div>
 </nav>

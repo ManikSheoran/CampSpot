@@ -1,19 +1,14 @@
 <% layout('layouts/boilerplate') %>
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-    }
-
-    #map {
-        position: relative;
-        width: 100%;
-        height: 350px;
-        margin-top: 20px;
-    }
-</style>
 
 <div id="map"></div>
+
+<div class="cover-container d-flex w-100 mx-auto">
+    <main class="px-3 text-center">
+        <h1>CampSpot</h1>
+        <p class="lead">Explore the beauty of nature with CampSpot!<br>Discover unique camps and share your experiences.<br>Let's make memories!</p>
+        <a href="/camps" class="btn btn-lg btn-success">View Campgrounds</a>
+    </main>
+</div>
 
 <script>
     const mapToken = '<%- process.env.MAPBOX_TOKEN %>';

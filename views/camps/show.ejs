@@ -17,9 +17,9 @@
                 <li class="list-group-item"><strong>Price:</strong> ₹ <%= camp.price %></li>
             </ul>
             <div class="card-body d-flex justify-content-between">
-                <a class="btn btn-primary" href="/camps">All Camps</a>
+                <a class="btn btn-success" href="/camps">All Camps</a>
                 <% if(currentUser && camp.author.equals(currentUser._id)) { %>
-                <a class="btn btn-primary" href="/camps/<%= camp._id %>/edit">Edit</a>
+                <a class="btn btn-success" href="/camps/<%= camp._id %>/edit">Edit</a>
                 <form action="/camps/<%= camp._id %>?_method=DELETE" method="POST" class="d-inline">
                     <button class="btn btn-danger">Delete</button>
                 </form>

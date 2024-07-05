@@ -1,10 +1,17 @@
-.floating-alert {
-    max-width: 400px;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1050; 
-    width: 100%;
+.btn-success,
+.navbar {
+    background-color: #226552;
+}
+
+body,
+form {
+    font-family: "Montserrat", sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
 }
 
 .navbar-toggler {
@@ -12,19 +19,88 @@
     border: 0;
 }
 
-.btn,.form-control,.card,.card-img-top{
+.btn,
+.card,
+.card-img-top,
+.form-control {
     border-radius: 0;
 }
 
-.navbar {
-    background-color: #226552;
+.btn-success {
+    border-color: #154437;
 }
 
-.btn-primary {
-    background-color: #226552;
-    border: #50B498;
+.btn-success:hover {
+    background-color: #084433;
+    border-color: #50b498;
 }
 
 .btn-danger {
     background-color: #f85959;
+}
+
+.floating-alert {
+    max-width: 400px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1050;
+    width: 100%;
+}
+
+#map {
+    width: 100%;
+    height: 350px;
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.cover-container {
+    min-height: 40vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+main {
+    text-align: center;
+}
+
+main h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+main .lead {
+    font-size: 1.5rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    color: #555;
+}
+
+@media (min-width: 768px) {
+    .card {
+        text-align: left;
+    }
+}
+
+.card-title {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+form {
+    text-align: left;
+}
+
+.authbtn {
+    color: #226552;
+    text-decoration: none;
+}
+
+.authbtn:hover {
+    text-decoration: underline;
 }
