@@ -6,7 +6,6 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const mongoose = require("mongoose");
-
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const session = require("express-session");
@@ -14,60 +13,64 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const localStrategy = require('passport-local');
 const MongoStore = require('connect-mongo');
-
-const Camp = require('./models/camp.js');
-const camps = require('./routes/camps.js');
-const reviews = require('./routes/reviews.js');
-const auth = require('./routes/auth.js');
-const User = require('./models/user.js');
+const Camp = require('./models/camp'); // Assuming the model is exported correctly
+const camps = require('./routes/camps');
+const reviews = require('./routes/reviews');
+const auth = require('./routes/auth');
+const User = require('./models/user');
 const ExpressError = require('./utilities/ExpressError');
 
 require('dotenv').config();
 
-mongoose.set('strictQuery', true);
+// MongoDB connection
+mongoose.connect(process.env.DB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true
+})
+.then(() => {
+    console.log("MongoDB connected");
+})
+.catch(err => {
+    console.error("MongoDB connection error:", err.message);
+});
 
-mongoose.connect(process.env.DB_URI)
-    .then(() => {
-        console.log("Mongo Connection Open!!!");
-    })
-    .catch(err => {
-        console.log("OH NO ERROR!!!");
-        console.log(err);
-    });
-
+// Middleware and configurations
 app.engine('ejs', ejsMate);
 app.set("views", path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
-app.use(methodOverride("_method"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(methodOverride("_method"));
 
 const sessionConfig = {
     store: MongoStore.create({
         mongoUrl: process.env.DB_URI,
-        touchAfter: 24 * 60 * 60
+        secret: process.env.SESSION_SECRET,
+        touchAfter: 24 * 60 * 60 // 24 hours
     }),
-    secret: 'badsecret',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
-        expires: Date.now() + 1000 * 60 * 60 * 24,
-        maxAge: 1000 * 60 * 60 * 24
+        expires: Date.now() + 1000 * 60 * 60 * 24, // 1 day
+        maxAge: 1000 * 60 * 60 * 24 // 1 day
     }
 };
 
 app.use(session(sessionConfig));
 app.use(flash());
 
+// Passport authentication setup
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new localStrategy(User.authenticate()));
-
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+// Middleware to pass user data to all templates
 app.use((req, res, next) => {
     res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
@@ -75,9 +78,14 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get("/", async (req, res) => {
-    const allCamps = await Camp.find({});
-    res.render("home", { title: 'Home', allCamps});
+// Routes
+app.get("/", async (req, res, next) => {
+    try {
+        const allCamps = await Camp.find({});
+        res.render("home", { title: 'Home', allCamps });
+    } catch (err) {
+        next(new ExpressError("Failed to retrieve camps", 500));
+    }
 });
 
 // Auth routes
