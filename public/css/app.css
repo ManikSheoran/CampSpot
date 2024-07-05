@@ -15,3 +15,16 @@
 .btn,.form-control,.card,.card-img-top{
     border-radius: 0;
 }
+
+.navbar {
+    background-color: #226552;
+}
+
+.btn-primary {
+    background-color: #226552;
+    border: #50B498;
+}
+
+.btn-danger {
+    background-color: #f85959;
+}

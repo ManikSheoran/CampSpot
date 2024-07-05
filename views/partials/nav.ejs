@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
     <div class="container-fluid">
         <a class="navbar-brand" href="/camps">CampSpot</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -11,11 +11,11 @@
                 <a class="nav-link" href="/camps/new">New Camp</a>
             </div>
             <div class="navbar-nav ms-auto">
-                <% if(!currentUser){ %>
-                <a class="nav-link" href="/login">Login</a>
-                <a class="nav-link" href="/register">Sign Up</a>
+                <% if(!currentUser) { %>
+                    <a class="nav-link" href="/login">Login</a>
+                    <a class="nav-link" href="/register">Sign Up</a>
                 <% } else { %>
-                <a class="nav-link" href="/logout">Logout</a>
+                    <a class="nav-link" href="/logout">Logout</a>
                 <% } %>
             </div>
         </div>
