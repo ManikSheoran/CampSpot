@@ -15,6 +15,7 @@ const passport = require('passport');
 const localStrategy = require('passport-local');
 const MongoStore = require('connect-mongo');
 
+const Camp = require('./models/camp.js');
 const camps = require('./routes/camps.js');
 const reviews = require('./routes/reviews.js');
 const auth = require('./routes/auth.js');
@@ -74,8 +75,9 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get("/", (req, res) => {
-    res.render("home", { title: 'Home' });
+app.get("/", async (req, res) => {
+    const allCamps = await Camp.find({});
+    res.render("home", { title: 'Home', allCamps});
 });
 
 // Auth routes

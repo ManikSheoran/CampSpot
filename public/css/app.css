@@ -6,3 +6,12 @@
     z-index: 1050; 
     width: 100%;
 }
+
+.navbar-toggler {
+    border-radius: 0;
+    border: 0;
+}
+
+.btn,.form-control,.card,.card-img-top{
+    border-radius: 0;
+}

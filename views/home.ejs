@@ -1,9 +1,23 @@
 <% layout('layouts/boilerplate') %>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
 
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-12 text-center">
-            <h1>Welcome to My Website</h1>
-        </div>
-    </div>
-</div>
+    #map {
+        position: relative;
+        width: 100%;
+        height: 350px;
+        margin-top: 20px;
+    }
+</style>
+
+<div id="map"></div>
+
+<script>
+    const mapToken = '<%- process.env.MAPBOX_TOKEN %>';
+    const camps = JSON.parse('<%- JSON.stringify(allCamps) %>');
+</script>
+
+<script src="/js/clustermap.js"></script>
