@@ -1,7 +1,7 @@
 mapboxgl.accessToken = mapToken;
 const map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/mapbox/dark-v11',
+    style: 'mapbox://styles/mapbox/light-v11',
     center: [75.8577, 22.7196],
     zoom: 3.2
 });
@@ -24,11 +24,11 @@ map.on('load', () => {
             'circle-color': [
                 'step',
                 ['get', 'point_count'],
-                '#FFC0D9',
+                '#9DDE8B',
                 5,
-                '#FF90BC',
+                '#40A578',
                 15,
-                '#CD8D7A'
+                '#006769'
             ],
             'circle-radius': [
                 'step',
@@ -60,7 +60,7 @@ map.on('load', () => {
         source: 'camps',
         filter: ['!', ['has', 'point_count']],
         paint: {
-            'circle-color': '#8ACDD7',
+            'circle-color': '#E6FF94',
             'circle-radius': 8,
             'circle-stroke-width': 1,
             'circle-stroke-color': '#fff'
@@ -92,9 +92,9 @@ map.on('load', () => {
     // description HTML from its properties.
     map.on('click', 'unclustered-point', (e) => {
         const coordinates = e.features[0].geometry.coordinates.slice();
-        const mag = e.features[0].properties.mag;
-        const tsunami =
-            e.features[0].properties.tsunami === 1 ? 'yes' : 'no';
+        const popUp = e.features[0].properties.popUp;
+        const link =
+            e.features[0].properties.popUpLink;
 
         // Ensure that if the map is zoomed out such that
         // multiple copies of the feature are visible, the
@@ -108,7 +108,7 @@ map.on('load', () => {
         new mapboxgl.Popup()
             .setLngLat(coordinates)
             .setHTML(
-                `magnitude: ${mag}<br>Was there a tsunami?: ${tsunami}`
+                `<a style="text-decoration:none" href="/camps/${link}">${popUp}</a>`
             )
             .addTo(map);
     });

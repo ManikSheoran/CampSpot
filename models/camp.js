@@ -4,6 +4,9 @@ const Review = require("./review");
 const User = require("./user");
 const { campSchema } = require('../schemas');
 
+//to add virtuals when document is converted to JSON
+const opts = { toJSON: { virtuals: true }};
+
 const CampSchema = new Schema({
     title: String,
     image: {
@@ -34,6 +37,14 @@ const CampSchema = new Schema({
             ref: 'Review'
         }
     ]
+}, opts);
+
+CampSchema.virtual('properties.popUp').get(function() {
+    return `${this.title}`;
+});
+
+CampSchema.virtual('properties.popUpLink').get(function() {
+    return `${this._id}`;
 });
 
 CampSchema.post('findOneAndDelete', async function (doc) {
