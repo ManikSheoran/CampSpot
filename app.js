@@ -11,7 +11,9 @@ const ejsMate = require("ejs-mate");
 const session = require("express-session");
 const flash = require('connect-flash');
 const passport = require('passport');
-const localStrategy = require('passport-local');
+const LocalStrategy = require('passport-local');
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
 const MongoStore = require('connect-mongo');
 const Camp = require('./models/camp'); // Assuming the model is exported correctly
 const camps = require('./routes/camps');
@@ -20,16 +22,14 @@ const auth = require('./routes/auth');
 const User = require('./models/user');
 const ExpressError = require('./utilities/ExpressError');
 
-require('dotenv').config();
-
 // MongoDB connection
-mongoose.connect(process.env.DB_URI,)
-.then(() => {
-    console.log("MongoDB connected");
-})
-.catch(err => {
-    console.error("MongoDB connection error:", err.message);
-});
+mongoose.connect(process.env.DB_URI)
+    .then(() => {
+        console.log("MongoDB connected");
+    })
+    .catch(err => {
+        console.error("MongoDB connection error:", err.message);
+    });
 
 // Middleware and configurations
 app.engine('ejs', ejsMate);
@@ -38,20 +38,78 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride("_method"));
+app.use(mongoSanitize({ replaceWith: '_', }));
+app.use(helmet());
 
+// CSP configuration
+const scriptSrcUrls = [
+    "https://cdn.jsdelivr.net/",
+    "https://stackpath.bootstrapcdn.com/",
+    "https://api.tiles.mapbox.com/",
+    "https://api.mapbox.com/",
+    "https://kit.fontawesome.com/",
+    "https://cdnjs.cloudflare.com/",
+    "https://cdn.jsdelivr.net",
+];
+
+const styleSrcUrls = [
+    "https://cdn.jsdelivr.net/",
+    "https://kit-free.fontawesome.com/",
+    "https://stackpath.bootstrapcdn.com/",
+    "https://api.mapbox.com/",
+    "https://api.tiles.mapbox.com/",
+    "https://fonts.googleapis.com/",
+    "https://use.fontawesome.com/",
+];
+
+const connectSrcUrls = [
+    "https://api.mapbox.com/",
+    "https://a.tiles.mapbox.com/",
+    "https://b.tiles.mapbox.com/",
+    "https://events.mapbox.com/",
+];
+
+const fontSrcUrls = [
+    "https://fonts.gstatic.com/",
+];
+
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: ["'self'"],
+            connectSrc: ["'self'", ...connectSrcUrls],
+            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", ...scriptSrcUrls],
+            styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+            workerSrc: ["'self'", "blob:"],
+            objectSrc: [],
+            imgSrc: [
+                "'self'",
+                "blob:",
+                "data:",
+                "https://res.cloudinary.com/dkn97rfk1/",
+                "https://images.unsplash.com/",
+            ],
+            fontSrc: ["'self'", ...fontSrcUrls],
+        },
+    })
+);
+
+// Session configuration
 const sessionConfig = {
+    name: 'MaSh',
     store: MongoStore.create({
         mongoUrl: process.env.DB_URI,
         secret: process.env.SESSION_SECRET,
-        touchAfter: 24 * 60 * 60 // 24 hours
+        touchAfter: 24 * 60 * 60
     }),
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
-        expires: Date.now() + 1000 * 60 * 60 * 24, // 1 day
-        maxAge: 1000 * 60 * 60 * 24 // 1 day
+        // secure: true // Enable this in production for HTTPS
+        expires: Date.now() + 1000 * 60 * 60 * 24,
+        maxAge: 1000 * 60 * 60 * 24
     }
 };
 
@@ -61,7 +119,7 @@ app.use(flash());
 // Passport authentication setup
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new localStrategy(User.authenticate()));
+passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
