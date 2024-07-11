@@ -84,7 +84,7 @@ main .lead {
     color: #555;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 0px) {
     .card {
         text-align: left;
     }
