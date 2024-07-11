@@ -1,18 +1,67 @@
-<% layout('layouts/boilerplate') %>
+<!DOCTYPE html>
+<html lang="en">
 
-<div id="map"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
 
-<div class="cover-container d-flex w-100 mx-auto">
-    <main class="px-3 text-center">
-        <h1>CampSpot</h1>
-        <p class="lead">Explore the beauty of nature with CampSpot!<br>Discover unique camps and share your experiences.<br>Let's make memories!</p>
-        <a href="/camps" class="btn btn-lg btn-success">View Campgrounds</a>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <!-- Mapbox CSS and JS -->
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js" crossorigin="anonymous"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/stars.css">
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <!-- Include navigation -->
+    <%- include('partials/nav') %>
+
+    <main class="container-fluid">
+        <!-- Flash messages -->
+        <div class="floating-alert">
+            <%- include('partials/flash') %>
+        </div>
+
+        <!-- Body content injected by Express -->
+        <div id="map"></div>
+
+        <div class="cover-container d-flex w-100 mx-auto">
+            <main class="px-3 text-center">
+                <h1>CampSpot</h1>
+                <p class="lead">Explore the beauty of nature with CampSpot!<br>Discover unique camps and share your experiences.<br>Let's make memories!</p>
+                <a href="/camps" class="btn btn-lg btn-success">View Campgrounds</a>
+            </main>
+        </div>
+
+        <script>
+            const mapToken = '<%- process.env.MAPBOX_TOKEN %>';
+            const camps = JSON.parse('<%- JSON.stringify(allCamps) %>');
+        </script>
+
+        <script src="/js/clustermap.js"></script>
     </main>
-</div>
 
-<script>
-    const mapToken = '<%- process.env.MAPBOX_TOKEN %>';
-    const camps = JSON.parse('<%- JSON.stringify(allCamps) %>');
-</script>
+    <!-- Include footer -->
+    <%- include('partials/footer') %>
 
-<script src="/js/clustermap.js"></script>
+    <!-- Bootstrap JavaScript dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+
+    <!-- Custom JavaScript -->
+    <script src="/js/validateForms.js"></script>
+</body>
+
+</html>

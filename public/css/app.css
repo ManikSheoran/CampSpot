@@ -1,6 +1,9 @@
-.btn-success,
+.btn-success{
+    background-color: rgb(34, 101, 82);
+}
+
 .navbar {
-    background-color: #226552;
+    background-color: rgb(34, 101, 82);
 }
 
 body,
