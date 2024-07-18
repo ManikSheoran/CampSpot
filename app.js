@@ -15,6 +15,8 @@ const LocalStrategy = require('passport-local');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 const MongoStore = require('connect-mongo');
+const http = require('http');
+const cron = require('node-cron');
 const Camp = require('./models/camp');
 const camps = require('./routes/camps');
 const reviews = require('./routes/reviews');
@@ -159,6 +161,17 @@ app.all('*', (req, res, next) => {
 app.use((err, req, res, next) => {
     const { statusCode = 500, message = "Something Went Wrong" } = err;
     res.status(statusCode).render("error", { message, statusCode, err, title: "Error" });
+});
+
+// Function to ping the server
+const pingServer = () => {
+    http.get('http://your-app-url.com');
+};
+
+// Schedule a cron job to ping the server every 29 minutes
+cron.schedule('*/29 * * * *', () => {
+    pingServer();
+    console.log('Pinged server to keep it awake.');
 });
 
 const PORT = process.env.PORT || 3000;
